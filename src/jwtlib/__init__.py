@@ -11,7 +11,7 @@ the user settings fetched from the database. This makes it easy to implement
 different classes of users like *regular* and *system* each with it's own
 token TTL.
 """
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 # stdlib imports
 from datetime import datetime, timedelta
@@ -26,8 +26,6 @@ from . import exc
 
 
 L = getLogger(__name__)
-pyjwt = PyJWT()
-# types
 User = Any      # We support any user class.
 JsonDict = Dict[str, Any]
 
@@ -44,6 +42,7 @@ class Jwt(object):
     UserNotFoundError = exc.UserNotFoundError
 
     def __init__(self):
+        self.pyjwt = PyJWT()
         self.header_prefix = 'JWT'
         self.token_ttl = timedelta(seconds=300)
         self.not_before = timedelta(seconds=0)
@@ -93,7 +92,7 @@ class Jwt(object):
                 ', '.join(missing)
             ))
 
-        return pyjwt.encode(
+        return self.pyjwt.encode(
             payload,
             self.secret_key,
             algorithm=self.algorithm,
@@ -116,7 +115,7 @@ class Jwt(object):
         opts = {'require_' + claim: True for claim in self.require_claims}
         opts.update({'verify_' + claim: True for claim in self.verify_claims})
 
-        return pyjwt.decode(
+        return self.pyjwt.decode(
             token, self.secret_key,
             options=opts,
             algorightms=[self.algorithm],

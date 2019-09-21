@@ -17,6 +17,10 @@ docs:
     - src/jwtlib
 
 lint:
+  tools:
+    - pycodestyle
+    - pylint
+    - mypy
   paths:
     - src/jwtlib
 
