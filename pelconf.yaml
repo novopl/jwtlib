@@ -1,0 +1,26 @@
+src_dir: 'src'
+src_path: 'src/jwtlib'
+version_file: 'src/jwtlib/__init__.py'
+
+commands:
+  - peltak.commands.docs
+  - peltak.commands.git
+  - peltak.commands.lint
+  - peltak.commands.version
+  - peltak.commands.test
+  - peltak.extra.changelog
+  - peltak.extra.gitflow
+  - peltak.extra.pypi
+
+docs:
+  reference:
+    - src/jwtlib
+
+lint:
+  paths:
+    - src/jwtlib
+
+test:
+  types:
+    default:
+      paths: ['tests/unit']
