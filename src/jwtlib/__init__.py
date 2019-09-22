@@ -11,7 +11,7 @@ the user settings fetched from the database. This makes it easy to implement
 different classes of users like *regular* and *system* each with it's own
 token TTL.
 """
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 # stdlib imports
 from datetime import datetime, timedelta
@@ -66,7 +66,7 @@ class Jwt(object):
         try:
             payload = self.decode_token(parts[1])
         except PyJwtInvalidTokenError:
-            raise self.InvalidTokenError()
+            raise self.InvalidTokenError("Failed to decode token")
 
         user = self.user_from_payload(payload)
 

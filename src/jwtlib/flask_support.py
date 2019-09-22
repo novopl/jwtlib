@@ -9,22 +9,40 @@ from collections import OrderedDict
 from datetime import timedelta
 from functools import wraps
 from logging import getLogger
-from pprint import pformat
-from typing import Callable, Tuple
+from typing import Any, Dict, Sequence, Tuple, Union
 from types import FunctionType
 
 # 3rd party imports
 import flask
 
 # local imports
-from jwtlib import Jwt
+from . import Jwt
+from .exc import JwtError
+from .types import PlainType, Decorator
+
+
+# Flask related types. Kept here so jwtlib doesn't have to depend on flask as
+# long as the user does not import this module.
+FlaskResponseData = Union[flask.Response, str]
+FlaskResponseStatus = int
+FlaskException = Any
+FlaskResponseHeaders = Union[
+    Dict[str, PlainType],
+    Sequence[Tuple[str, PlainType]]
+]
+FlaskViewResult = Union[
+    FlaskResponseData,
+    Tuple[FlaskResponseData, FlaskResponseStatus],
+    Tuple[FlaskResponseData, FlaskResponseHeaders],
+    Tuple[FlaskResponseData, FlaskResponseStatus, FlaskResponseHeaders]
+]
 
 
 L = getLogger(__name__)
 
 
 class JwtFlask(Jwt):
-    def init_app(self, app):
+    def init_app(self, app: flask.Flask) -> None:
         # Load configuration from app.config and setup flask handlers
         conf_mapping = [
             ('JWT_HEADER_PREFIX', 'header_prefix', lambda x: x),
@@ -43,28 +61,24 @@ class JwtFlask(Jwt):
         app.errorhandler(self.Error)(self._flask_exc_handler)
         app.after_request(self._flask_after_request)
 
-    def authenticate(
-            self, login_required: bool =True
-    ) -> Callable[[FunctionType], FunctionType]:
-        def decorator(fn):
+    def user_required(self) -> Decorator:
+        def decorator(fn: FunctionType) -> FunctionType:
             @wraps(fn)
-            def wrapper(*args, **kw) -> Tuple[flask.Response, int]:
-                req = flask.request
-                req.user = self.authorize(req.headers.get('Authorization'))
+            def wrapper(*args, **kw) -> FlaskViewResult:
+                user = self.authorize(flask.request.headers.get('Authorization'))
 
-                L.info("Setting user on request: {}", pformat(req.user))
-
-                if login_required and req.user is None:
+                if user is None:
                     raise self.UserNotFoundError()
+
+                flask.g.user = user
 
                 return fn(*args, **kw)
 
             return wrapper
-
         return decorator
 
-    def _flask_exc_handler(self, exc):
-        L.error(exc)
+    def _flask_exc_handler(self, exc: JwtError) -> FlaskViewResult:
+        L.exception(exc)
 
         return flask.jsonify(OrderedDict([
             ('status_code', exc.status),
@@ -72,7 +86,7 @@ class JwtFlask(Jwt):
             ('detail', exc.message),
         ])), exc.status, exc.headers
 
-    def _flask_after_request(self, response):
+    def _flask_after_request(self, response: flask.Response) -> flask.Response:
         # Only return refreshed token for API calls that already supplied one
         # in the request..
         if (

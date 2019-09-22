@@ -13,7 +13,7 @@ class JwtError(Exception):
         self.headers = headers
 
     def __repr__(self):
-        return 'JwtError: {}'.format(self.error)
+        return '<JwtError: {}>'.format(self.error)
 
     def __str__(self):
         return 'JwtError: {}: {}'.format(self.error, self.message)
