@@ -7,10 +7,10 @@ class JwtError(Exception):
     message = 'Unknown error'
     status = 401
 
-    def __init__(self, message=None, headers=None):
+    def __init__(self, message=None, headers=None, status=None):
         self.error = self.__class__.error or JwtError.error
         self.message = message or self.__class__.message
-        self.status = self.__class__.status
+        self.status = status or self.__class__.status
         self.headers = headers
 
     def __repr__(self):
