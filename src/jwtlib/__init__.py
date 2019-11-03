@@ -11,7 +11,7 @@ the user settings fetched from the database. This makes it easy to implement
 different classes of users like *regular* and *system* each with it's own
 token TTL.
 """
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 from datetime import datetime, timedelta
 from logging import getLogger
