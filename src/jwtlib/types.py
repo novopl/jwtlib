@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
+""" Common types used in jwtlib. """
 
-# stdlib imports
-from typing import Any, Callable, Dict, Sequence, Tuple, Union
-from types import FunctionType
+from typing import Any, Callable, Dict, Union
+
 
 JsonDict = Dict[str, Any]
 PlainType = Union[str, int, float, bool]
-Decorator = Callable[[FunctionType], FunctionType]
+Decorator = Callable[..., Any]

@@ -13,15 +13,12 @@ token TTL.
 """
 __version__ = '0.0.3'
 
-# stdlib imports
 from datetime import datetime, timedelta
 from logging import getLogger
 from typing import Any, Dict, Optional
 
-# 3rd party imports
 from jwt import PyJWT, InvalidTokenError as PyJwtInvalidTokenError
 
-# local imports
 from . import exc
 
 
@@ -31,6 +28,7 @@ JsonDict = Dict[str, Any]
 
 
 class Jwt(object):
+    """ Base class implementing JWT support. """
     # For easier access
     Error = exc.JwtError
 
@@ -52,7 +50,32 @@ class Jwt(object):
         self.leeway = 0
         self.secret_key = None
 
-    def authorize(self, auth_header: str) -> User:
+    def authorize(self, auth_header: Optional[str]) -> User:
+        """ Given an Authorization Header try to get the matching user.
+
+        Args:
+            auth_header (Optional[str]):
+                The full content of the 'Authorization' header as read from the
+                request. The way it's stored in the request will depend on
+                framework used.
+
+        Returns:
+            User: The user instance represented by the token read from *auth_header*.
+
+        Raises:
+            Jwt.AuthHeaderMissingError:
+                If the given auth header is empty or `None`.
+            Jwt.BadAuthHeaderError:
+                If the given auth header cannot be parsed. This is either if
+                the Authorization header is completely wrong or the header
+                prefix does not match whatever is set in `Jwt.header_prefix`
+            Jwt.InvalidTokenError:
+                Cannot decode the JWT token.
+            Jwt.UserNotFoundError:
+                User represented by the token was not found. This might happen
+                if the user is deleted after the token is issued but before it
+                expires.
+        """
         if not auth_header:
             raise self.AuthHeaderMissingError()
 
@@ -76,12 +99,27 @@ class Jwt(object):
         return user
 
     def user_payload(self, user) -> JsonDict:
+        """ Return payload for the given user.
+
+        This method must be implemented by the subclasses in order to integrate
+        with any storage used by the project (jwtlib itself is framework
+        agnostic).
+        """
         raise NotImplemented("user_payload() method must be implemented")
 
     def user_from_payload(self, payload: JsonDict) -> User:
+        """ Return a user for the given JWT payload.
+
+        This method must be implemented by the subclasses in order to integrate
+        with any storage used by the project (jwtlib itself is framework
+        agnostic).
+
+        This method is the opposite of `user_payload`.
+        """
         raise NotImplemented("user_from_payload() method must be implemented")
 
     def generate_token(self, user: User) -> str:
+        """ Generate JWT token for the given user. """
         headers = self.create_headers()
         payload = self.create_payload()
         payload.update(self.user_payload(user))
@@ -100,9 +138,22 @@ class Jwt(object):
         )
 
     def create_headers(self) -> Optional[JsonDict]:
+        """ Create general JWT token headers.
+
+        This method can be overloaded in subclasses to customize the way tokens
+        are generated.
+        """
         return None
 
     def create_payload(self) -> JsonDict:
+        """ Create core JWT payload.
+
+        This will contain the fields that are required by JWT like expiration
+        and will be included in every token generated.
+
+        Be careful when you overload this method in subclasses as you will have
+        to take care of including the necessary fields or the jwtlib will break.
+        """
         iat = datetime.utcnow()
 
         return {
@@ -112,6 +163,7 @@ class Jwt(object):
         }
 
     def decode_token(self, token: str) -> JsonDict:
+        """ Decode the token and return it's payload. """
         opts = {'require_' + claim: True for claim in self.require_claims}
         opts.update({'verify_' + claim: True for claim in self.verify_claims})
 
