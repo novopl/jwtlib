@@ -70,7 +70,7 @@ jobs:
           name: Setup
           command: |
             echo "export PIPENV_VENV_IN_PROJECT=1" >> $BASH_ENV
-            echo "export PIPENV_IGNORE_VIRTUALENVS=1 >> $BASH_ENV
+            echo "export PIPENV_IGNORE_VIRTUALENVS=1" >> $BASH_ENV
 
             echo '== pipenv sync -d ========================================'
             pipenv sync -d
@@ -85,7 +85,7 @@ jobs:
       - run:
           name: Create release tag
           command: |
-            pipenv run peltak release tag -m "$(peltak changelog)"
+            pipenv run peltak release tag -m "$(pipenv run peltak changelog)"
             git push origin v$(pipenv run peltak version --porcelain)
 
 # docs:

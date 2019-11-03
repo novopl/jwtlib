@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f0cb3171e11925c38a50db13175a6cc225387eb8e9dc93930e9206215455743e"
+            "sha256": "4a6239bd3a8917e1df204a75eafd6e7b152e3290b706706dfe7ac5423e20ee15"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -288,10 +288,10 @@
         },
         "peltak": {
             "hashes": [
-                "sha256:28bb2ea724f58bd6cec40bc322197e7fb40621610c0b3958a958e700db3213dc"
+                "sha256:170b07d5be8d3065cb8664b647192f3d9448d300f733e07353b451c559432fdc"
             ],
             "index": "pypi",
-            "version": "==0.26.3"
+            "version": "==0.26.5"
         },
         "pluggy": {
             "hashes": [
