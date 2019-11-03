@@ -42,8 +42,12 @@ L = getLogger(__name__)
 
 
 class JwtFlask(Jwt):
-    def init_app(self, app: flask.Flask) -> None:
+    def init_app(self, app: flask.Flask, rolling_session=True) -> None:
         # Load configuration from app.config and setup flask handlers
+        self.init_config(app)
+        self.register_handlers(app, rolling_session=True)
+
+    def init_config(self, app: flask.Flask) -> None:
         conf_mapping = [
             ('JWT_HEADER_PREFIX', 'header_prefix', lambda x: x),
             ('JWT_TOKEN_TTL', 'token_ttl', lambda x: timedelta(seconds=x)),
@@ -58,8 +62,10 @@ class JwtFlask(Jwt):
             if name in app.config:
                 setattr(self, attr, deserializer(app.config[name]))
 
-        app.errorhandler(self.Error)(self._flask_exc_handler)
-        app.after_request(self._flask_after_request)
+    def register_handlers(self, app: flask.Flask, rolling_session=True) -> None:
+        app.errorhandler(self.Error)(self.exc_handler)
+        if rolling_session:
+            app.after_request(self.rolling_session_after_request)
 
     def user_required(self) -> Decorator:
         def decorator(fn: FunctionType) -> FunctionType:
@@ -77,7 +83,7 @@ class JwtFlask(Jwt):
             return wrapper
         return decorator
 
-    def _flask_exc_handler(self, exc: JwtError) -> FlaskViewResult:
+    def exc_handler(self, exc: JwtError) -> FlaskViewResult:
         L.exception(exc)
 
         return flask.jsonify(OrderedDict([
@@ -86,16 +92,19 @@ class JwtFlask(Jwt):
             ('detail', exc.message),
         ])), exc.status, exc.headers
 
-    def _flask_after_request(self, response: flask.Response) -> flask.Response:
+    def rolling_session_after_request(
+        self,
+        response: flask.Response
+    ) -> flask.Response:
         # Only return refreshed token for API calls that already supplied one
         # in the request..
         if (
-                response.content_type == 'application/json' and
-                hasattr(flask.request, 'user') and
-                flask.request.user is not None and
-                'Authorization' in flask.request.headers
+            response.content_type == 'application/json' and
+            hasattr(flask.g, 'user') and
+            flask.g.user is not None and
+            'Authorization' in flask.request.headers
         ):
-            token = self.generate_token(flask.request.user)
+            token = self.generate_token(flask.g.user)
             response.headers['X-JWT-Token'] = token
 
         return response
