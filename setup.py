@@ -1,6 +1,5 @@
 import os
 import re
-import sys
 from setuptools import setup, find_packages
 
 
@@ -37,7 +36,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages('src'),
     install_requires=[
-        "pyjwt==1.7.1",
+        "pyjwt~=1.7.1",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

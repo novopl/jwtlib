@@ -16,6 +16,7 @@ ___*.py
 cache.sqlite
 .cache
 .pytest_cache
+.mypy_cache
 
 ################
 # Python files #

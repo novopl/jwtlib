@@ -7,54 +7,48 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps-rev1-{{ checksum "setup.py" }}
+          key: deps-rev1-{{ checksum "Pipfile.lock" }}
 
       - run:
           name: Setup dependencies
           command: |
+            echo "export PIPENV_VENV_IN_PROJECT=1" >> $BASH_ENV
+            echo "export PIPENV_IGNORE_VIRTUALENVS=1" >> $BASH_ENV
+
             echo '== which pip ============================================='
             which pip
             echo '== which python =========================================='
             which python
             echo '== python --version ======================================'
             python --version
-            echo '== pipenv lock -d --requirements | tee requirements.txt =='
-            time pipenv lock -d --requirements | tee requirements.txt
-            echo '== pip install . ========================================='
-            pip install .
-            echo '== cat requirements.txt =================================='
-            cat requirements.txt
-            echo '== pip install -r requirements.txt ======================='
-            time pip install -r requirements.txt
+            echo '== pipenv lock -d --requirements ========================='
+            pipenv lock -d --requirements | tee requirements.txt
+            echo '== pipenv sync -d ========================================'
+            pipenv sync -d
+            echo '=========================================================='
+
+      - save_cache:
+          key: deps-rev1-{{ checksum "Pipfile.lock" }}
+          paths:
+            - /usr/local/bin
+            - /usr/local/lib/python3.6/site-packages
+            - .venv
 
       - run:
-          name: Lint
-          command: peltak lint
-
-      - restore_cache:
-          key: tox-rev1-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
+          name: Check
+          command: pipenv run peltak check
 
       - run:
           name: Test
-          command: tox
-
-      - save_cache:
-          key: tox-rev1-{{ checksum "setup.py" }}-{{ checksum "ops/devrequirements.txt" }}
-          paths:
-          - .tox
+          command: pipenv run peltak test
 
       - run:
           name: Build Documentation
           command: |
-            peltak docs --recreate --run-doctests
+            pipenv run peltak docs --recreate --run-doctests
             mv docs/html docs/jwtlib-docs
             cd docs && zip -r ../.build/jwtlib-docs.zip jwtlib-docs
 
-      - save_cache:
-          key: deps-rev1-{{ checksum "setup.py" }}
-          paths:
-          - /usr/local/bin
-          - /usr/local/lib/python3.6/site-packages
       - store_test_results:
           path: .build
       - store_artifacts:
@@ -70,24 +64,29 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps-rev1-{{ checksum "setup.py" }}
+          key: deps-rev1-{{ checksum "Pipfile.lock" }}
 
       - run:
           name: Setup
-          command: python setup.py develop
+          command: |
+            echo "export PIPENV_VENV_IN_PROJECT=1" >> $BASH_ENV
+            echo "export PIPENV_IGNORE_VIRTUALENVS=1 >> $BASH_ENV
+
+            echo '== pipenv sync -d ========================================'
+            pipenv sync -d
 
       - run:
           name: Upload to pypi
           command: |
-            peltak pypi configure
-            peltak pypi upload
+            pipenv run peltak pypi configure
+            pipenv run peltak pypi upload
             rm ~/.pypirc
 
       - run:
           name: Create release tag
           command: |
-            peltak release tag -m "$(peltak changelog)"
-            git push origin v$(peltak version --porcelain)
+            pipenv run peltak release tag -m "$(peltak changelog)"
+            git push origin v$(pipenv run peltak version --porcelain)
 
 # docs:
 #   docker:
