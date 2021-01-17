@@ -171,7 +171,6 @@ class Jwt(object):
         opts = {'require_' + claim: True for claim in self.require_claims}
         opts.update({'verify_' + claim: True for claim in self.verify_claims})
 
-
         try:
             return self.pyjwt.decode(
                 token, self.secret_key,
