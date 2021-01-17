@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ Flask integration
 
 As long as you don't import from here, flask is not a dependency of jwtlib.

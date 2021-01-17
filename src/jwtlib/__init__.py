@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ JWT implementation
 
 Custom token TTL per user
@@ -109,7 +108,7 @@ class Jwt(object):
         with any storage used by the project (jwtlib itself is framework
         agnostic).
         """
-        raise NotImplemented("user_payload() method must be implemented")
+        raise NotImplementedError("user_payload() method must be implemented")
 
     def user_from_payload(self, payload: JsonDict) -> User:
         """ Return a user for the given JWT payload.
@@ -120,7 +119,7 @@ class Jwt(object):
 
         This method is the opposite of `user_payload`.
         """
-        raise NotImplemented("user_from_payload() method must be implemented")
+        raise NotImplementedError("user_from_payload() method must be implemented")
 
     def generate_token(self, user: Optional[User]) -> str:
         """ Generate JWT token for the given user. """
