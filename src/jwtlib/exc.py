@@ -54,3 +54,9 @@ class UserNotFoundError(JwtError):
     """
     error = 'User Not Found'
     message = 'User does not exist'
+
+
+class TokenExpired(JwtError):
+    """ The token passed to .authorize() is expired. """
+    error = 'Token expired'
+    message = 'Token expired'

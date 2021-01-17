@@ -11,13 +11,14 @@ the user settings fetched from the database. This makes it easy to implement
 different classes of users like *regular* and *system* each with it's own
 token TTL.
 """
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 from datetime import datetime, timedelta
 from logging import getLogger
 from typing import Any, Dict, Optional
 
-from jwt import PyJWT, InvalidTokenError as PyJwtInvalidTokenError
+from jwt import PyJWT, InvalidTokenError as PyJwtInvalidTokenError, ExpiredSignatureError
+
 
 from . import exc
 
@@ -38,6 +39,7 @@ class Jwt(object):
     InvalidTokenError = exc.InvalidTokenError
     NotAuthorizedError = exc.NotAuthorizedError
     UserNotFoundError = exc.UserNotFoundError
+    TokenExpired = exc.TokenExpired
 
     def __init__(self):
         self.pyjwt = PyJWT()
@@ -81,7 +83,9 @@ class Jwt(object):
 
         parts = auth_header.split()
         if parts[0] != self.header_prefix:
-            raise self.BadAuthHeaderError()
+            raise self.BadAuthHeaderError(
+                f"Bad auth header: '{parts[0]}', expected '{self.header_prefix}'"
+            )
         elif len(parts) == 1:
             # Missing token
             raise self.InvalidTokenError("Missing or empty token")
@@ -89,7 +93,9 @@ class Jwt(object):
         try:
             payload = self.decode_token(parts[1])
         except PyJwtInvalidTokenError:
-            raise self.InvalidTokenError("Failed to decode token")
+            raise self.InvalidTokenError(f"Failed to decode token '{parts[1]}'")
+        except ExpiredSignatureError:
+            raise self.TokenExpired()
 
         user = self.user_from_payload(payload)
 
