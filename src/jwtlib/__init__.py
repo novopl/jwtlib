@@ -11,7 +11,7 @@ the user settings fetched from the database. This makes it easy to implement
 different classes of users like *regular* and *system* each with it's own
 token TTL.
 """
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 from datetime import datetime, timedelta
 from logging import getLogger
@@ -94,8 +94,6 @@ class Jwt(object):
             payload = self.decode_token(parts[1])
         except PyJwtInvalidTokenError:
             raise self.InvalidTokenError(f"Failed to decode token '{parts[1]}'")
-        except ExpiredSignatureError:
-            raise self.TokenExpired()
 
         user = self.user_from_payload(payload)
 
@@ -173,9 +171,12 @@ class Jwt(object):
         opts = {'require_' + claim: True for claim in self.require_claims}
         opts.update({'verify_' + claim: True for claim in self.verify_claims})
 
-        return self.pyjwt.decode(
-            token, self.secret_key,
-            options=opts,
-            algorightms=[self.algorithm],
-            leeway=self.leeway
-        )
+        try:
+            return self.pyjwt.decode(
+                token, self.secret_key,
+                options=opts,
+                algorightms=[self.algorithm],
+                leeway=self.leeway
+            )
+        except ExpiredSignatureError:
+            raise self.TokenExpired()
