@@ -9,13 +9,13 @@ commands:
   - peltak.extra.pypi
   - peltak.extra.version
 
-src_dir: 'src'
-build_dir: '.build'
-src_path: 'src/jwtlib'
+python_paths: ['src']
+build_dir: .build
+src_path: src/jwtlib
 version:
   files:
-    - "pyproject.toml"
-    - 'src/jwtlib/__init__.py'
+    - pyproject.toml
+    - src/jwtlib/__init__.py
 
 
 lint:
@@ -26,14 +26,10 @@ lint:
   paths:
     - src/jwtlib
 
-test:
-  types:
-    default:
-      paths: ['tests/unit']
 scripts:
   # root scripts
   check:
-    about: Run all checks (types, pycodestyle, code style)
+    about: Run all checks (typing, pycodestyle, code style)
     root_cli: true
     files:
       paths:
