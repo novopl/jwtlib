@@ -65,7 +65,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps-{{ checksum ".circleci/config.yml" }}-{{ checksum "poetry.lock" }}}
+          key: deps-{{ checksum ".circleci/config.yml" }}-{{ checksum "poetry.lock" }}
 
       - run:
           name: Install dependencies
