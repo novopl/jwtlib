@@ -122,8 +122,11 @@ class Jwt(object):
         """
         raise NotImplemented("user_from_payload() method must be implemented")
 
-    def generate_token(self, user: User) -> str:
+    def generate_token(self, user: Optional[User]) -> str:
         """ Generate JWT token for the given user. """
+        if user is None:
+            raise self.NotAuthorizedError("No user to generate token for")
+
         headers = self.create_headers()
         payload = self.create_payload()
         payload.update(self.user_payload(user))
