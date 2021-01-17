@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """ JWT implementation
 
 Custom token TTL per user
@@ -11,7 +10,7 @@ the user settings fetched from the database. This makes it easy to implement
 different classes of users like *regular* and *system* each with it's own
 token TTL.
 """
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 from datetime import datetime, timedelta
 from logging import getLogger
@@ -109,7 +108,7 @@ class Jwt(object):
         with any storage used by the project (jwtlib itself is framework
         agnostic).
         """
-        raise NotImplemented("user_payload() method must be implemented")
+        raise NotImplementedError("user_payload() method must be implemented")
 
     def user_from_payload(self, payload: JsonDict) -> User:
         """ Return a user for the given JWT payload.
@@ -120,10 +119,13 @@ class Jwt(object):
 
         This method is the opposite of `user_payload`.
         """
-        raise NotImplemented("user_from_payload() method must be implemented")
+        raise NotImplementedError("user_from_payload() method must be implemented")
 
-    def generate_token(self, user: User) -> str:
+    def generate_token(self, user: Optional[User]) -> str:
         """ Generate JWT token for the given user. """
+        if user is None:
+            raise self.NotAuthorizedError("No user to generate token for")
+
         headers = self.create_headers()
         payload = self.create_payload()
         payload.update(self.user_payload(user))

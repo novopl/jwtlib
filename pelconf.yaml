@@ -9,11 +9,14 @@ commands:
   - peltak.extra.pypi
   - peltak.extra.version
 
-src_dir: 'src'
-build_dir: '.build'
-src_path: 'src/jwtlib'
+python_paths: ['src']
+build_dir: .build
+src_path: src/jwtlib
 version:
-  file: 'src/jwtlib/__init__.py'
+  files:
+    - pyproject.toml
+    - src/jwtlib/__init__.py
+
 
 lint:
   tools:
@@ -23,14 +26,10 @@ lint:
   paths:
     - src/jwtlib
 
-test:
-  types:
-    default:
-      paths: ['tests/unit']
 scripts:
   # root scripts
   check:
-    about: Run all checks (types, pycodestyle, code style)
+    about: Run all checks (typing, pycodestyle, code style)
     root_cli: true
     files:
       paths:
@@ -42,13 +41,13 @@ scripts:
       set -e
 
       {{ 'mypy' | header }}
-      pipenv run mypy --ignore-missing-imports {{ files | wrap_paths }}
+      mypy --ignore-missing-imports {{ files | wrap_paths }}
 
       {{ 'pycodestyle' | header }}
-      pipenv run pycodestyle --config ops/tools/pycodestyle.ini {{ files | wrap_paths }};
+      pycodestyle --config ops/tools/pycodestyle.ini {{ files | wrap_paths }};
 
       {{ 'pylint' | header }}
-      pipenv run pylint --rcfile ops/tools/pylint.ini {{ files | wrap_paths }}
+      pylint --rcfile ops/tools/pylint.ini {{ files | wrap_paths }}
 
       {{ 'done' | header }}
 
