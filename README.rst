@@ -27,3 +27,16 @@ Available commands
     $ peltak test       # Run tests
     $ peltak lint       # Run code checks
     $ peltak docs       # Build documentation using Sphinx
+
+
+Release new version
+-------------------
+
+.. note:: Before releasing, make sure your changes are part of the develop branch.
+
+.. code-block:: bash
+
+    $ peltak release start
+    $ peltak git push
+    [ Create PR on GitHub and merge it ]
+    $ peltak release merged
