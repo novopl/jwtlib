@@ -10,7 +10,7 @@ the user settings fetched from the database. This makes it easy to implement
 different classes of users like *regular* and *system* each with it's own
 token TTL.
 """
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 from datetime import datetime, timedelta
 from logging import getLogger
@@ -188,9 +188,10 @@ class Jwt(object):
 
         try:
             return self.pyjwt.decode(
-                token, self.secret_key,
+                token,
+                key=self.secret_key,
                 options=opts,
-                algorightms=[self.algorithm],
+                algorithms=[self.algorithm],
                 leeway=self.leeway
             )
         except ExpiredSignatureError:
