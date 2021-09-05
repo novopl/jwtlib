@@ -94,6 +94,15 @@ class Jwt(object):
         return user
 
     def get_token_from_header(self, auth_header: str) -> str:
+        """ Parse auth header and extract the token
+
+        Args:
+            auth_header:
+                The content of the auth header as received with in the request.
+
+        Returns:
+            The JWT token stored in the header
+        """
         # Verify the token is in the right format
         parts = auth_header.split()
         if parts[0] != self.header_prefix:
@@ -104,7 +113,6 @@ class Jwt(object):
             raise self.InvalidTokenError("Missing or empty token")
 
         return parts[1]
-
 
     def user_payload(self, user) -> JsonDict:
         """ Return payload for the given user.
