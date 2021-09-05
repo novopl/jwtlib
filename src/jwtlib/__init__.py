@@ -80,26 +80,31 @@ class Jwt(object):
         if not auth_header:
             raise self.AuthHeaderMissingError()
 
+        token = self.get_token_from_header(auth_header)
+        try:
+            payload = self.decode_token(token)
+        except PyJwtInvalidTokenError:
+            raise self.InvalidTokenError(f"Failed to decode token '{token}'")
+
+        # Convert token payload to user it represents
+        user = self.user_from_payload(payload)
+        if user is None:
+            raise self.UserNotFoundError()
+
+        return user
+
+    def get_token_from_header(self, auth_header: str) -> str:
+        # Verify the token is in the right format
         parts = auth_header.split()
         if parts[0] != self.header_prefix:
             raise self.BadAuthHeaderError(
                 f"Bad auth header: '{parts[0]}', expected '{self.header_prefix}'"
             )
         elif len(parts) == 1:
-            # Missing token
             raise self.InvalidTokenError("Missing or empty token")
 
-        try:
-            payload = self.decode_token(parts[1])
-        except PyJwtInvalidTokenError:
-            raise self.InvalidTokenError(f"Failed to decode token '{parts[1]}'")
+        return parts[1]
 
-        user = self.user_from_payload(payload)
-
-        if user is None:
-            raise self.UserNotFoundError()
-
-        return user
 
     def user_payload(self, user) -> JsonDict:
         """ Return payload for the given user.

@@ -24,7 +24,7 @@ exclude = ["docs/**"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-pyjwt = "~=1.7.1"
+pyjwt = "^1.7.1"
 
 [tool.poetry.dev-dependencies]
 coverage = "~=5.3"
