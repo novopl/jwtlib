@@ -188,9 +188,10 @@ class Jwt(object):
 
         try:
             return self.pyjwt.decode(
-                token, self.secret_key,
+                token,
+                key=self.secret_key,
                 options=opts,
-                algorightms=[self.algorithm],
+                algorithms=[self.algorithm],
                 leeway=self.leeway
             )
         except ExpiredSignatureError:
