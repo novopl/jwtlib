@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jwtlib"
-version = "0.1.6"
+version = "0.2.0"
 description = "A little helper library to streamline working with JWT in python"
 readme = "README.rst"
 repository = "http://github.com/novopl/jwtlib"
@@ -24,7 +24,7 @@ exclude = ["docs/**"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-pyjwt = "^1.7.1"
+pyjwt = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 coverage = "~=5.3"
