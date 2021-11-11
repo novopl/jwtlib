@@ -10,7 +10,7 @@ the user settings fetched from the database. This makes it easy to implement
 different classes of users like *regular* and *system* each with it's own
 token TTL.
 """
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 from datetime import datetime, timedelta
 from logging import getLogger
@@ -81,12 +81,34 @@ class Jwt(object):
             raise self.AuthHeaderMissingError()
 
         token = self.get_token_from_header(auth_header)
+        return self.authorize_token(token)
+
+    def authorize_token(self, token: str) -> User:
+        """ Get user for a given token.
+
+        This method can be useful if the token is not coming from an HTTP header but
+        other means (like websockets).
+
+        Args:
+            token:
+                JWT token representing a user. This actually only stores the user
+                ID, the actual user is retrievieved with `user_from_payload()` method.
+
+        Returns:
+            A user corresponding to the given token (if it's valid).
+
+        Raises:
+            Jwt.InvalidTokenError:
+                If the token can't be decoded.
+            Jwt.UserNotFoundError:
+                If the user ID stored in the token cannot be found
+                (.user_from_payload() call returned ``None``).
+        """
         try:
             payload = self.decode_token(token)
         except PyJwtInvalidTokenError:
             raise self.InvalidTokenError(f"Failed to decode token '{token}'")
 
-        # Convert token payload to user it represents
         user = self.user_from_payload(payload)
         if user is None:
             raise self.UserNotFoundError()
