@@ -26,7 +26,7 @@ User = Any      # We support any user class.
 JsonDict = Dict[str, Any]
 
 
-class Jwt:
+class JwtLib:
     """ Base class implementing JWT support. """
     # For easier access
     Error = exc.JwtError
