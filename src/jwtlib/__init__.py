@@ -18,7 +18,6 @@ from typing import Any, Dict, Optional
 
 from jwt import PyJWT, InvalidTokenError as PyJwtInvalidTokenError, ExpiredSignatureError
 
-
 from . import exc
 
 
@@ -27,7 +26,7 @@ User = Any      # We support any user class.
 JsonDict = Dict[str, Any]
 
 
-class Jwt(object):
+class Jwt:
     """ Base class implementing JWT support. """
     # For easier access
     Error = exc.JwtError
