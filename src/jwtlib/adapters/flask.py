@@ -15,8 +15,8 @@ from types import FunctionType
 import flask
 
 # local imports
-from . import JwtLib
-from .exc import JwtError
+from ..exc import JwtError
+from ..main import JwtLib
 
 
 # Flask related types. Kept here so jwtlib doesn't have to depend on flask as
