@@ -15,13 +15,14 @@ from types import FunctionType
 import flask
 
 # local imports
-from . import Jwt
+from . import JwtLib
 from .exc import JwtError
-from .types import PlainType, Decorator
 
 
 # Flask related types. Kept here so jwtlib doesn't have to depend on flask as
 # long as the user does not import this module.
+PlainType = Union[str, int, float, bool]
+Decorator = Callable[..., Any]
 FlaskResponseData = Union[flask.Response, str]
 FlaskResponseStatus = int
 FlaskException = Any
@@ -40,7 +41,7 @@ FlaskViewResult = Union[
 L = getLogger(__name__)
 
 
-class JwtFlask(Jwt):
+class JwtFlask(JwtLib):
     """ A helper class that provides a basic jwtlib integration with Flask. """
     def init_app(self, app: flask.Flask, rolling_session=True) -> None:
         """ Initialize JWT from a flask app.

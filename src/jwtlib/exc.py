@@ -12,11 +12,11 @@ class JwtError(Exception):
         self.err_kwargs = kw
 
 
-class AuthHeaderMissingError(JwtError):
+class AuthHeaderMissing(JwtError):
     msg = 'Authorization Header Missing'
 
 
-class BadAuthHeaderError(JwtError):
+class BadAuthHeader(JwtError):
     msg = 'Bad Authorization header'
 
 
@@ -24,15 +24,15 @@ class ClaimMissing(JwtError, ValueError):
     msg = 'JWT Claim Missing'
 
 
-class InvalidTokenError(JwtError):
+class InvalidToken(JwtError):
     msg = "Not Authorized"
 
 
-class NotAuthorizedError(JwtError):
+class NotAuthorized(JwtError):
     msg = "Not Authorized"
 
 
-class UserNotFoundError(JwtError):
+class UserNotFound(JwtError):
     msg = 'User Not Found'
 
 
