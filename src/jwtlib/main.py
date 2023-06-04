@@ -43,7 +43,7 @@ class JwtLib:
 
     def __init__(self):
         self.pyjwt = PyJWT()
-        self.header_prefix = 'JWT'
+        self.header_prefix = 'Bearer'
         self.token_ttl = timedelta(seconds=300)
         self.not_before = timedelta(seconds=0)
         self.algorithm = 'HS256'
