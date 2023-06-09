@@ -1,11 +1,11 @@
-import random
 import dataclasses
-from string import ascii_letters, digits
+from typing import Generator
 
 import pytest
 
 from jwtlib import exc
-from jwtlib.main import JwtLib, TokenPayload, User
+from jwtlib.main import JwtLib, TokenPayload
+
 
 @dataclasses.dataclass
 class User:
@@ -21,7 +21,7 @@ USERS_DB = {
 
 
 @pytest.fixture(scope='session')
-def jwt() -> JwtLib:
+def jwt() -> Generator[JwtLib, None, None]:
     class TestJwt(JwtLib):
         def __init__(self, *args, **kw):
             super(TestJwt, self).__init__(*args, **kw)
@@ -39,7 +39,9 @@ def jwt() -> JwtLib:
             }
 
         def user_from_payload(self, payload: TokenPayload) -> User:
-            return USERS_DB.get(payload['id'])
+            if user := USERS_DB.get(payload['id']):
+                return user
+            raise exc.UserNotFound()
 
     yield TestJwt()
 
@@ -100,7 +102,6 @@ def test_raises_BadAuthHeader_for_invalid_header_prefix(jwt):
 
 
 def test_raises_InvalidToken_if_the_token_is_missing(jwt):
-    user = USERS_DB['1']
     header = f'{jwt.header_prefix}'
 
     with pytest.raises(exc.InvalidToken):
