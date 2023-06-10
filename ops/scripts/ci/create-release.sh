@@ -16,5 +16,5 @@ gh release create \
   --title "v$(cat ./RELEASE_VERSION)" \
   --notes "$(cat ./RELEASE_NOTES)" \
   "v$(cat ./RELEASE_VERSION)" \
-  dist/peltak-$(cat ./RELEASE_VERSION)-py3-none-any.whl \
-  dist/peltak-$(cat ./RELEASE_VERSION).tar.gz
+  dist/jwtlib-$(cat ./RELEASE_VERSION)-py3-none-any.whl \
+  dist/jwtlib-$(cat ./RELEASE_VERSION).tar.gz
