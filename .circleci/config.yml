@@ -61,7 +61,7 @@ jobs:
 
   release:
     docker:
-      - image: novopl/python37
+      - image: novopl/python:3.8-dev
     steps:
       - checkout
       - restore_cache:
