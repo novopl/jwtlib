@@ -1,6 +1,7 @@
+[tool]
 [tool.poetry]
 name = "jwtlib"
-version = "0.2.2"
+version = "0.3.0"
 description = "A little helper library to streamline working with JWT in python"
 readme = "README.rst"
 repository = "http://github.com/novopl/jwtlib"
@@ -47,6 +48,20 @@ peltak-todos = "^0.0.10"
 peltak-changelog = "^0.0.4"
 peltak-gitflow = "^0.0.4"
 
+
+[tool.pytest.ini_options]
+addopts = "--durations=3"
+doctest_optionflags = "NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ELLIPSIS"
+
+
+[tool.coverage.run]
+branch = true
+source = ['src']
+omit = []
+
+[tool.coverage.report]
+exclude_lines = ['nocov']
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -56,14 +71,3 @@ build-backend = "poetry.core.masonry.api"
 #     PYTEST     #
 ##################
 
-[tool.pytest.ini_options]
-addopts = "--durations=3"
-doctest_optionflags = "NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ELLIPSIS"
-
-[tool.coverage.run]
-branch = true
-source = ['src']
-omit = []
-
-[tool.coverage.report]
-exclude_lines = ['nocov']
