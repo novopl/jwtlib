@@ -1,8 +1,5 @@
-""" Common types used in jwtlib. """
-
-from typing import Any, Callable, Dict, Union
+from typing import Any, Dict
 
 
 JsonDict = Dict[str, Any]
-PlainType = Union[str, int, float, bool]
-Decorator = Callable[..., Any]
+TokenPayload = Dict[str, Any]

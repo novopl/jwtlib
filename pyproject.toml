@@ -1,6 +1,7 @@
+[tool]
 [tool.poetry]
 name = "jwtlib"
-version = "0.2.2"
+version = "0.3.0"
 description = "A little helper library to streamline working with JWT in python"
 readme = "README.rst"
 repository = "http://github.com/novopl/jwtlib"
@@ -23,28 +24,50 @@ include = ["LICENSE", "AUTHORS", "README.rst"]
 exclude = ["docs/**"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-pyjwt = "^2.0.0"
+python = ">=3.8.1,<4.0"
+pyjwt = ">=2.4.0"
 
 [tool.poetry.dev-dependencies]
-coverage = "~=5.3"
-factory-boy = "~=2.11"
-more-itertools = "<=5.0.0"
-mypy = {version = "==0.790",markers = "python_version >= '3.5'"}
-peltak = "~=0.27.0"
-psutil = "~=5.7.3"
-pycodestyle = "~=2.6.0"
-pylint = "~=2.6.0"
-pytest = "~=6.1.2"
-pytest-cov = "~=2.10.1"
-pytest-sugar = "~=0.9.4"
-Sphinx = ">=3.3.1"
-sphinx-refdoc = "~=0.3.0"
-sphinx_rtd_theme = "~=0.4.2"
-sphinxcontrib-plantuml = "~=0.17.1"
-requests = "~=2.25.0"
-flake8 = "^3.8.4"
+coverage = "^7.2.7"
+factory-boy = "^3.2.1"
+flake8 = "^6.0.0"
+more-itertools = "^9.1.0"
+mypy = "^1.3.0"
+peltak = "^0.30.0"
+pycodestyle = "^2.10.0"
+pylint = "^2.17.4"
+pytest = "^7.3.1"
+pytest-cov = "^4.1.0"
+pytest-sugar = "^0.9.7"
+requests = "^2.25.1"
+Sphinx = ">6.0,<7.0"
+sphinx-refdoc = "^0.3.0"
+sphinx_rtd_theme = "^1.2.2"
+sphinxcontrib-plantuml = "^0.25"
+peltak-todos = "^0.0.10"
+peltak-changelog = "^0.0.4"
+peltak-gitflow = "^0.0.4"
+
+
+[tool.pytest.ini_options]
+addopts = "--durations=3"
+doctest_optionflags = "NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ELLIPSIS"
+
+
+[tool.coverage.run]
+branch = true
+source = ['src']
+omit = []
+
+[tool.coverage.report]
+exclude_lines = ['nocov']
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
+##################
+#     PYTEST     #
+##################
+
