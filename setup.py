@@ -37,7 +37,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages('src'),
     install_requires=[
-        "pyjwt>=2.0.0",
+        "pyjwt>=2.4.0",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
