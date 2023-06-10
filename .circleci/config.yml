@@ -80,33 +80,6 @@ jobs:
           name: Create release
           command: poetry run peltak ci create-release
 
-#  release2:
-#    docker:
-#      - image: novopl/python:3.8-dev
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          key: deps-{{ checksum ".circleci/config.yml" }}-{{ checksum "poetry.lock" }}
-#
-#      - run:
-#          name: Install dependencies
-#          command: poetry install -n --no-ansi
-#
-#      - run:
-#          name: Upload to pypi
-#          command: |
-#            poetry publish -n --build --username="$PYPI_USER" --password="$PYPI_PASS"
-#
-#      - run:
-#          name: Create release
-#          command: poetry run peltak ci create-release
-#
-#      - run:
-#          name: Create release tag
-#          command: |
-#            poetry run peltak release tag -m "$(potery run peltak changelog)"
-#            git push origin v$(poetry run peltak version --porcelain)
-
 # docs:
 #   docker:
 #     - image: novopl/python36:ci-alpine

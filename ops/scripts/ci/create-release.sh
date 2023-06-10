@@ -18,3 +18,7 @@ gh release create \
   "v$(cat ./RELEASE_VERSION)" \
   dist/jwtlib-$(cat ./RELEASE_VERSION)-py3-none-any.whl \
   dist/jwtlib-$(cat ./RELEASE_VERSION).tar.gz
+
+rm RELEASE_NOTES
+rm RELEASE_VERSION
+rm -rf dist
