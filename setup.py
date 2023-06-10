@@ -1,6 +1,7 @@
 import os
 import re
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 
 RE_PY_VERSION = re.compile(
@@ -36,7 +37,7 @@ setup(
     package_dir={'': 'src'},
     packages=find_packages('src'),
     install_requires=[
-        "pyjwt~=1.7.1",
+        "pyjwt>=2.0.0",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

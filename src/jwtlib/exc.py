@@ -38,3 +38,7 @@ class UserNotFound(JwtError):
 
 class TokenExpired(JwtError):
     msg = 'Token expired'
+
+
+class UserAdapterMissing(JwtError):
+    msg = "User adapter is not configured."

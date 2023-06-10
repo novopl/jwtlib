@@ -13,22 +13,23 @@ token TTL.
 
 from datetime import datetime, timedelta
 from logging import getLogger
-from typing import Any, Dict, Optional
+from typing import Any, Generic, Optional, TypeVar
 
 from jwt import ExpiredSignatureError
 from jwt import InvalidTokenError as PyJwtInvalidTokenError
 from jwt import PyJWT
 
 from . import exc
+from .abstract import UserAdapterBase
+from .types import JsonDict, TokenPayload
 
 
+T = TypeVar('T')
 L = getLogger(__name__)
 User = Any      # We support any user class.
-JsonDict = Dict[str, Any]
-TokenPayload = Dict[str, Any]
 
 
-class JwtLib:
+class JwtLib(Generic[T]):
     """ Base class implementing JWT support. """
     # For easier access
     Error = exc.JwtError
@@ -41,7 +42,12 @@ class JwtLib:
     UserNotFound = exc.UserNotFound
     TokenExpired = exc.TokenExpired
 
-    def __init__(self):
+    def __init__(
+        self,
+        secret: Optional[str] = None,
+        user_adapter: Optional[UserAdapterBase] = None,
+    ):
+        self.user_adapter = user_adapter
         self.pyjwt = PyJWT()
         self.header_prefix = 'Bearer'
         self.token_ttl = timedelta(seconds=300)
@@ -50,7 +56,22 @@ class JwtLib:
         self.verify_claims = ['signature', 'exp', 'iat', 'nbf']
         self.require_claims = ['exp', 'iat', 'nbf']
         self.leeway = 0
-        self.secret_key = None
+        self.secret_key = secret
+
+    def set_user_adapter(self, user_adapter: UserAdapterBase):
+        self.user_adapter = user_adapter
+
+    def user_payload(self, account: T) -> TokenPayload:
+        if self.user_adapter:
+            return self.user_adapter.payload_for_user(account)
+
+        raise exc.UserAdapterMissing('payload_for_user')
+
+    def user_from_payload(self, payload: TokenPayload) -> Optional[T]:
+        if self.user_adapter:
+            return self.user_adapter.user_for_payload(payload)
+
+        raise exc.UserAdapterMissing('user_for_payload')
 
     def authorize(self, auth_header: str) -> User:
         """ Given an Authorization Header try to get the matching user.
@@ -132,26 +153,6 @@ class JwtLib:
             raise self.InvalidToken("Missing or empty token")
 
         return parts[1]
-
-    def user_payload(self, user) -> JsonDict:
-        """ Return payload for the given user.
-
-        This method must be implemented by the subclasses in order to integrate
-        with any storage used by the project (jwtlib itself is framework
-        agnostic).
-        """
-        raise NotImplementedError("user_payload() method must be implemented")
-
-    def user_from_payload(self, payload: JsonDict) -> User:
-        """ Return a user for the given JWT payload.
-
-        This method must be implemented by the subclasses in order to integrate
-        with any storage used by the project (jwtlib itself is framework
-        agnostic).
-
-        This method is the opposite of `user_payload`.
-        """
-        raise NotImplementedError("user_from_payload() method must be implemented")
 
     def generate_token(self, user: Optional[User]) -> str:
         """ Generate JWT token for the given user. """

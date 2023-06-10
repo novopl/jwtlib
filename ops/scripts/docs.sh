@@ -1,5 +1,4 @@
 # peltak:
-#   root_cli: true
 #   about: Generate sphinx documentation
 #   options:
 #     - name: ['--recreate']

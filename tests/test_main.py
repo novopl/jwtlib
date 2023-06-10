@@ -22,7 +22,7 @@ USERS_DB = {
 
 @pytest.fixture(scope='session')
 def jwt() -> Generator[JwtLib, None, None]:
-    class TestJwt(JwtLib):
+    class TestJwt(JwtLib[User]):
         def __init__(self, *args, **kw):
             super(TestJwt, self).__init__(*args, **kw)
 
