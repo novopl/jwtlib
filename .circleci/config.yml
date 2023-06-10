@@ -80,6 +80,27 @@ jobs:
           name: Create release
           command: poetry run peltak ci create-release
 
+  release-tag:
+    docker:
+      - image: novopl/python:3.8-dev
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps-{{ checksum ".circleci/config.yml" }}-{{ checksum "poetry.lock" }}
+
+      - run:
+          name: Setup peltak
+          command: poetry install -n --no-ansi
+
+      - run:
+          name: Upload to pypi
+          command: |
+            poetry publish -n --build --username="$PYPI_USER" --password="$PYPI_PASS"
+
+      - run:
+          name: Create release
+          command: poetry run peltak ci create-release
+
 # docs:
 #   docker:
 #     - image: novopl/python36:ci-alpine
@@ -122,6 +143,11 @@ workflows:
             branches:
               only: master
               ignore: [gh-pages]
+      - release-tag:
+          filters:
+            tags:
+              only:
+                - /v\d+\.\d+(.\d+)?/
 #     - docs:
 #         requires:
 #           - build
