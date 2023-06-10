@@ -14,6 +14,9 @@
 #     - name: ['--cov-xml']
 #       about: Generate junit XML coverage report. Useful for 3rd party integrations.
 #       is_flag: true
+#     - name: ['--junit']
+#       about: Generate junit XML report. Useful for 3rd party integrations.
+#       is_flag: true
 #     - name: ['--cov']
 #       about: |
 #         What type of coverage should we define. Allowed values are:
@@ -23,10 +26,9 @@
 #   use:
 #     - cprint
 #     - header
-
-
-
 {% set cov_html_path = conf.build_dir  + '/coverage' %}
+{% set cov_xml_path = conf.build_dir  + '/coverage.xml' %}
+{% set results_path = conf.build_dir  + '/test-results/results.xml' %}
 
 {% if opts.kind in ('all', 'doctest') %}
   {{ "Running doctests" | header }}
@@ -51,7 +53,9 @@ set -e
     --cov=src/{{ pkg_name }} \
     --cov-report=term:skip-covered \
     --cov-report=html:{{ cov_html_path }} \
-    {{ '--cov-report=xml' if opts.cov_xml else '' }} \
+    --cov-report=html:{{ cov_html_path }} \
+    {{ '--cov-report=xml:' + cov_xml_path if opts.cov_xml else '' }} \
+    {{ '--junitxml=' + results_path if opts.junit else '' }} \
     {{ ctx.verbose | count_flag('v') }} \
     {{ '-p no:sugar' if opts.no_sugar else '' }} \
     tests

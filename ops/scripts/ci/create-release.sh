@@ -12,7 +12,7 @@ git push origin v$(cat ./RELEASE_VERSION)
 # Build release files and create GitHub release
 poetry build
 gh release create \
-  --repo "novopl/peltak" \
+  --repo "novopl/jwtlib" \
   --title "v$(cat ./RELEASE_VERSION)" \
   --notes "$(cat ./RELEASE_NOTES)" \
   "v$(cat ./RELEASE_VERSION)" \
