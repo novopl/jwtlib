@@ -314,6 +314,30 @@ PyYAML = ">=6.0"
 tomlkit = ">=0.7.0"
 
 [[package]]
+name = "peltak-changelog"
+version = "0.0.4"
+description = ""
+category = "dev"
+optional = false
+python-versions = ">=3.7.2,<4.0"
+
+[[package]]
+name = "peltak-gitflow"
+version = "0.0.4"
+description = ""
+category = "dev"
+optional = false
+python-versions = ">=3.7.2,<4.0"
+
+[[package]]
+name = "peltak-todos"
+version = "0.0.10"
+description = ""
+category = "dev"
+optional = false
+python-versions = ">=3.7.2,<4.0"
+
+[[package]]
 name = "platformdirs"
 version = "3.5.1"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
@@ -744,7 +768,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "flake8 (<5)", "pytest-co
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "13a7057614af1b479581c066ac066ede6872d904f481ca07a23bbcf023cc3526"
+content-hash = "704670c94f94986bb6af5c7dba58c92a24ee14170e198ab3a1dcf258635f4a81"
 
 [metadata.files]
 alabaster = []
@@ -776,6 +800,9 @@ mypy = []
 mypy-extensions = []
 packaging = []
 peltak = []
+peltak-changelog = []
+peltak-gitflow = []
+peltak-todos = []
 platformdirs = []
 pluggy = []
 pycodestyle = []

@@ -1,0 +1,43 @@
+# peltak configuration file
+# Visit https://novopl.github.io/peltak for more information
+pelconf_version: '0'
+plugins:
+  - peltak.cli.git
+  - peltak.cli.version
+  - peltak_changelog
+  - peltak_gitflow
+  - peltak_todos
+
+
+cfg:
+  python_paths: ['src']
+  build_dir: .build
+  scripts_dir: ops/scripts
+
+  version:
+    files:
+      - pyproject.toml
+      - src/jwtlib/__init__.py
+
+  changelog:
+    tag_format: '{tag}:'
+    tags:
+      - tag: feature
+        header: Features
+      - tag: fix
+        header: Fixes
+      - tag: change
+        header: Changes
+      - tag: dev
+        header: Dev tasks
+      - tag: refactor
+        header: Refactored
+
+  clean:
+    patterns:
+      - '*.mypy_cache'
+      - '*.pytest_cache'
+      - '*.build'
+      - '*__pycache__'
+    exclude:
+      - .venv

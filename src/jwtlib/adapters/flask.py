@@ -8,8 +8,8 @@ from collections import OrderedDict
 from datetime import timedelta
 from functools import wraps
 from logging import getLogger
-from typing import Any, Callable, Dict, Sequence, Tuple, Union
 from types import FunctionType
+from typing import Any, Callable, Dict, Sequence, Tuple, Union
 
 # 3rd party imports
 import flask
