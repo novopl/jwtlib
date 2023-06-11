@@ -3,7 +3,7 @@
 
 # Generate release notes (changelog)
 poetry run peltak version --porcelain > ./RELEASE_VERSION
-poetry run peltak changelog | tee ./RELEASE_NOTES
+git log -1 --pretty=%B | tee ./RELEASE_NOTES
 
 # Build release files and create GitHub release
 poetry build
