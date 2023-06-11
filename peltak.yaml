@@ -5,7 +5,6 @@ plugins:
   - peltak.cli.git
   - peltak.cli.version
   - peltak_changelog
-  - peltak_gitflow
   - peltak_todos
 
 

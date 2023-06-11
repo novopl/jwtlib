@@ -56,7 +56,7 @@ jobs:
           path: .build/jwtlib-docs.zip
           destination: jwtlib-docs.zip
 
-  release-tag:
+  release:
     docker:
       - image: novopl/python:3.8-dev
     steps:
@@ -88,7 +88,7 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v.*/
-      - release-tag:
+      - release:
           requires:
             - build
           filters:

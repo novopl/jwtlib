@@ -322,14 +322,6 @@ optional = false
 python-versions = ">=3.7.2,<4.0"
 
 [[package]]
-name = "peltak-gitflow"
-version = "0.0.4"
-description = ""
-category = "dev"
-optional = false
-python-versions = ">=3.7.2,<4.0"
-
-[[package]]
 name = "peltak-todos"
 version = "0.0.10"
 description = ""
@@ -430,7 +422,7 @@ testutils = ["gitpython (>3)"]
 
 [[package]]
 name = "pytest"
-version = "7.3.1"
+version = "7.3.2"
 description = "pytest: simple powerful testing with Python"
 category = "dev"
 optional = false
@@ -445,7 +437,7 @@ pluggy = ">=0.12,<2.0"
 tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 
 [package.extras]
-testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
+testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
 [[package]]
 name = "pytest-cov"
@@ -768,7 +760,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "flake8 (<5)", "pytest-co
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "9ed3f9a372cf0388efe4a996a869d92958855ee0a6c990157676d8fae63538cf"
+content-hash = "1c933a283d69131d9bf051949d21689ef0257488b413c36a27e831fc1306f806"
 
 [metadata.files]
 alabaster = []
@@ -801,7 +793,6 @@ mypy-extensions = []
 packaging = []
 peltak = []
 peltak-changelog = []
-peltak-gitflow = []
 peltak-todos = []
 platformdirs = []
 pluggy = []

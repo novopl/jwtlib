@@ -46,7 +46,6 @@ sphinx_rtd_theme = "^1.2.2"
 sphinxcontrib-plantuml = "^0.25"
 peltak-todos = "^0.0.10"
 peltak-changelog = "^0.0.4"
-peltak-gitflow = "^0.0.4"
 
 
 [tool.pytest.ini_options]
