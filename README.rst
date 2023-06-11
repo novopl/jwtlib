@@ -13,9 +13,8 @@ Initialize local repository
 
 .. code-block:: bash
 
-    $ pipenv install -d                     # Install all dependencies
-    $ pipenv run python setup.py develop    # Setup the pkg for local development
-    $ pipenv shell                          # Open shell within the virtualenv
+    $ poetry install
+    $ poetry shell                          # Open shell within the virtualenv
 
 
 Available commands
@@ -25,18 +24,18 @@ Available commands
 
     $ peltak --help     # Show the list of available commands
     $ peltak test       # Run tests
-    $ peltak lint       # Run code checks
+    $ peltak check      # Run code checks
     $ peltak docs       # Build documentation using Sphinx
 
 
 Release new version
 -------------------
 
-.. note:: Before releasing, make sure your changes are part of the develop branch.
+While on master branch, you can release the current state of it by running
 
 .. code-block:: bash
 
-    $ peltak release start
-    $ peltak git push
-    [ Create PR on GitHub and merge it ]
-    $ peltak release merged
+    peltak release create               # Create a patch release
+    peltak release create -t patch      # Create a patch release
+    peltak release create -t minor      # Create a minor release
+    peltak release create -t major      # Create a major release
