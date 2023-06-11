@@ -12,14 +12,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            echo '== which pip ============================================='
-            which pip
-            echo '== which python =========================================='
-            which python
-            echo '== python --version ======================================'
-            python --version
-            echo '== whoami ================================================'
-            whoami
+            echo -n 'pip            : ' && which pip
+            echo -n 'python         : ' && which python
+            echo -n 'python version : ' && python --version
+            echo -n 'whoami         : ' && whoami
+
             echo '== poetry install ========================================'
             poetry config virtualenvs.in-project true
             poetry show -v
@@ -59,27 +56,6 @@ jobs:
           path: .build/jwtlib-docs.zip
           destination: jwtlib-docs.zip
 
-  release:
-    docker:
-      - image: novopl/python:3.8-dev
-    steps:
-      - checkout
-      - restore_cache:
-          key: deps-{{ checksum ".circleci/config.yml" }}-{{ checksum "poetry.lock" }}
-
-      - run:
-          name: Setup peltak
-          command: poetry install -n --no-ansi
-
-      - run:
-          name: Upload to pypi
-          command: |
-            poetry publish -n --build --username="$PYPI_USER" --password="$PYPI_PASS"
-
-      - run:
-          name: Create release
-          command: poetry run peltak ci create-release
-
   release-tag:
     docker:
       - image: novopl/python:3.8-dev
@@ -94,63 +70,35 @@ jobs:
 
       - run:
           name: Upload to pypi
-          command: |
-            poetry publish -n --build --username="$PYPI_USER" --password="$PYPI_PASS"
+          command: poetry publish -n --build --username="$PYPI_USER" --password="$PYPI_PASS"
 
       - run:
           name: Create release
-          command: poetry run peltak ci create-release
-
-# docs:
-#   docker:
-#     - image: novopl/python36:ci-alpine
-#   steps:
-#     - checkout
-#     - restore_cache:
-#         key: deps-rev1-{{ checksum "setup.py" }}
-
-#     - run:
-#         name: Setup
-#         command: |
-#           pip install .
-#           peltak --help
-
-#     - run:
-#         name: Deploy gh-pages
-#         command: |
-#           peltak docs
-#           git checkout gh-pages
-#           cp -r docs/html/* ./
-#           git add .
-#           git config user.email ${GIT_EMAIL}
-#           git config user.name ${GIT_USER}
-#           git commit -nm "Docs build #${CIRCLECI_BUILD_NUM}"
-#           git push --no-verify origin gh-pages
+          command: poetry run peltak ci publish-release
 
 
 workflows:
   version: 2
-  main:
+
+  release:
     jobs:
       - build:
-          filters:
+          filters: &release-filters
             branches:
-              ignore: [gh-pages]
-      - release:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+      - release-tag:
           requires:
             - build
           filters:
+            <<: *release-filters
+
+  dev:
+    jobs:
+      - build:
+          filters: &dev-filters
             branches:
-              only: master
               ignore: [gh-pages]
-      - release-tag:
-          filters:
             tags:
-              only:
-                - /v\d+\.\d+(.\d+)?/
-#     - docs:
-#         requires:
-#           - build
-#         filters:
-#           branches:
-#             only: master
+              ignore: /^v.*/
