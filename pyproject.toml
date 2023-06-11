@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "jwtlib"
-version = "0.3.6"
+version = "0.3.7"
 description = "A little helper library to streamline working with JWT in python"
 readme = "README.rst"
 repository = "http://github.com/novopl/jwtlib"
@@ -60,6 +60,7 @@ omit = []
 
 [tool.coverage.report]
 exclude_lines = ['nocov']
+
 
 
 
